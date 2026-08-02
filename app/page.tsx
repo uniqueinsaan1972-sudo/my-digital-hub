@@ -3,28 +3,31 @@
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
-  return (
-    <div className={styles.container}>
-      <div className={styles.hero}>
-        <h1>🔐 getuniquevault</h1>
-        <p className={styles.tagline}>
-          Ek jagah — Images, Videos, APKs aur Digital Resources
-        </p>
+  const categories = [
+    { name: 'Images', icon: '🖼️' },
+    { name: 'Graphics', icon: '🎨' },
+    { name: 'Videos', icon: '🎬' },
+    { name: 'APKs', icon: '📱' },
+  ];
 
-        <div className={styles.features}>
-          <div className={styles.featureCard}>
-            <span className={styles.icon}>🖼️</span>
-            <h3>Images & Graphics</h3>
-          </div>
-          <div className={styles.featureCard}>
-            <span className={styles.icon}>🎬</span>
-            <h3>Videos & Presets</h3>
-          </div>
-          <div className={styles.featureCard}>
-            <span className={styles.icon}>📱</span>
-            <h3>APKs & Tools</h3>
-          </div>
+  return (
+    <div className={styles.page}>
+      {/* NAVBAR */}
+      <nav className={styles.navbar}>
+        <div className={styles.logo}>⚡ getuniquevault</div>
+        <div className={styles.navRight}>
+          <a href="/login" className={styles.loginLink}>Login</a>
+          <a href="/signup" className={styles.signupBtn}>Sign Up</a>
         </div>
+      </nav>
+
+      {/* HERO */}
+      <section className={styles.hero}>
+        <h1>
+          Free Digital Assets <br />
+          <span className={styles.highlight}>For Creators</span>
+        </h1>
+        <p>Download images, graphics, videos, APKs & code. All FREE! 🎉</p>
 
         <div className={styles.buttons}>
           <a href="/signup" className={styles.primaryBtn}>
@@ -34,7 +37,17 @@ export default function Home() {
             Login Karo
           </a>
         </div>
-      </div>
+      </section>
+
+      {/* CATEGORIES */}
+      <section className={styles.categories}>
+        {categories.map((cat) => (
+          <div key={cat.name} className={styles.categoryCard}>
+            <span className={styles.categoryIcon}>{cat.icon}</span>
+            <h3>{cat.name}</h3>
+          </div>
+        ))}
+      </section>
     </div>
   );
 }

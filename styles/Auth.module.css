@@ -1,26 +1,43 @@
-.container {
+.page {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0a0e17;
   font-family: 'Arial', sans-serif;
+  padding: 20px;
 }
 
 .card {
-  background: white;
+  background: #0f1420;
+  border: 1px solid #1f2937;
   padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   width: 100%;
   max-width: 400px;
 }
 
+.logo {
+  text-align: center;
+  color: #60a5fa;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
 .card h1 {
   text-align: center;
-  color: #333;
-  margin-bottom: 30px;
+  color: #e5e7eb;
+  margin-bottom: 8px;
   font-size: 24px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  margin-bottom: 25px;
 }
 
 .card form {
@@ -31,20 +48,26 @@
 
 .card input {
   padding: 12px;
-  border: 2px solid #e0e0e0;
+  background: #1a2030;
+  border: 1px solid #2d3748;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 15px;
+  color: #e5e7eb;
   transition: border-color 0.3s;
+}
+
+.card input::placeholder {
+  color: #6b7280;
 }
 
 .card input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #60a5fa;
 }
 
 .card button {
   padding: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
   color: white;
   border: none;
   border-radius: 8px;
@@ -56,7 +79,6 @@
 
 .card button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
 }
 
 .card button:disabled {
@@ -64,36 +86,37 @@
   cursor: not-allowed;
 }
 
-.card p {
+.switchText {
   text-align: center;
   margin-top: 20px;
-  color: #666;
+  color: #9ca3af;
+  font-size: 14px;
 }
 
-.card a {
-  color: #667eea;
+.switchText a {
+  color: #60a5fa;
   text-decoration: none;
   font-weight: bold;
 }
 
-.card a:hover {
+.switchText a:hover {
   text-decoration: underline;
 }
 
 .error {
-  background: #fee;
-  color: #c33;
+  background: #7f1d1d;
+  color: #fca5a5;
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 15px;
-  border-left: 4px solid #c33;
+  border-left: 4px solid #ef4444;
+  font-size: 14px;
 }
 
 @media (max-width: 480px) {
   .card {
     padding: 25px;
   }
-
   .card h1 {
     font-size: 20px;
   }

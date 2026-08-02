@@ -31,8 +31,7 @@ export default function Signup() {
         uid: user.uid
       });
 
-      alert('Account banaya gaya! 🎉');
-      router.push('/login');
+      router.push('/dashboard');
     } catch (err) {
       setError(err.message);
       console.error('Signup error:', err);
@@ -42,29 +41,29 @@ export default function Signup() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.page}>
       <div className={styles.card}>
-        <h1>🚀 getuniquevault Signup</h1>
-        
+        <div className={styles.logo}>⚡ getuniquevault</div>
+        <h1>Create Account</h1>
+        <p className={styles.subtitle}>Free digital assets ke liye signup karo</p>
+
         {error && <div className={styles.error}>{error}</div>}
-        
+
         <form onSubmit={handleSignup}>
           <input
             type="text"
-            placeholder="Tera Name Likho"
+            placeholder="Tera Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
-          
           <input
             type="email"
-            placeholder="Email Likho"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          
           <input
             type="password"
             placeholder="Password (6+ characters)"
@@ -73,13 +72,12 @@ export default function Signup() {
             required
             minLength="6"
           />
-          
           <button type="submit" disabled={loading}>
             {loading ? 'Creating Account...' : 'Account Banao 🎯'}
           </button>
         </form>
 
-        <p>
+        <p className={styles.switchText}>
           Already account hai? <a href="/login">Login Karo</a>
         </p>
       </div>

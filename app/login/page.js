@@ -19,10 +19,7 @@ export default function Login() {
     setError('');
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      alert('Login successful! 🎉');
+      await signInWithEmailAndPassword(auth, email, password);
       router.push('/dashboard');
     } catch (err) {
       setError(err.message);
@@ -33,35 +30,35 @@ export default function Login() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.page}>
       <div className={styles.card}>
-        <h1>🔐 getuniquevault Login</h1>
-        
+        <div className={styles.logo}>⚡ getuniquevault</div>
+        <h1>Welcome Back</h1>
+        <p className={styles.subtitle}>Login karo apne account mein</p>
+
         {error && <div className={styles.error}>{error}</div>}
-        
+
         <form onSubmit={handleLogin}>
           <input
             type="email"
-            placeholder="Email Likho"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          
           <input
             type="password"
-            placeholder="Password Likho"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          
           <button type="submit" disabled={loading}>
             {loading ? 'Logging In...' : 'Login Karo 🚀'}
           </button>
         </form>
 
-        <p>
+        <p className={styles.switchText}>
           Account nahi hai? <a href="/signup">Signup Karo</a>
         </p>
       </div>
