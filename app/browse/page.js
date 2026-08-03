@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { database } from '../lib/firebase';
 import { ref, onValue } from 'firebase/database';
 import { useSearchParams } from 'next/navigation';
 import styles from '../../styles/browse.module.css';
 
-export default function Browse() {
+function BrowseContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category') || 'All';
-  
+
   const [assets, setAssets] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(categoryParam);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
@@ -21,7 +21,7 @@ export default function Browse() {
 
   useEffect(() => {
     const assetsRef = ref(database, 'assets');
-    
+
     const unsubscribe = onValue(assetsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -72,10 +72,10 @@ export default function Browse() {
 
       <div className={styles.container}>
         <h1 className={styles.title}>Browse Assets</h1>
-        
-        <input 
-          type="text" 
-          placeholder="Search assets..." 
+
+        <input
+          type="text"
+          placeholder="Search assets..."
           className={styles.searchInput}
         />
 
@@ -103,7 +103,7 @@ export default function Browse() {
               {videoSubcategories.map(sub => {
                 const count = getSubcategoryCount(sub);
                 const isActive = selectedSubcategory === sub;
-                
+
                 return (
                   <div
                     key={sub}
@@ -149,5 +149,13 @@ export default function Browse() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function Browse() {
+  return (
+    <Suspense fallback={<div style={{ color: '#fff', padding: '40px', textAlign: 'center' }}>Loading...</div>}>
+      <BrowseContent />
+    </Suspense>
   );
 }
