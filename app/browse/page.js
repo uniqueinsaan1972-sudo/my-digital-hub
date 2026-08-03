@@ -1,148 +1,147 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, database } from "../lib/firebase";
-import { ref, get, update } from "firebase/database";
-import { useRouter, useSearchParams } from "next/navigation";
-import styles from "../../styles/browse.module.css";
+import { useState, useEffect } from 'react';
+import { database } from '../lib/firebase';
+import { ref, onValue } from 'firebase/database';
+import { useSearchParams } from 'next/navigation';
+import styles from '../../styles/browse.module.css';
 
-function BrowseContent() {
-  const [user, setUser] = useState(null);
-  const [assets, setAssets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [searchText, setSearchText] = useState("");
-  const router = useRouter();
+export default function Browse() {
   const searchParams = useSearchParams();
+  const categoryParam = searchParams.get('category') || 'All';
+  
+  const [assets, setAssets] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(categoryParam);
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [filteredAssets, setFilteredAssets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Subcategories for Videos
+  const videoSubcategories = ['Meme', 'Gaming', 'Free Fire Montage', 'Tutorial', 'Other'];
 
   useEffect(() => {
-    const catParam = searchParams.get("category");
-    const searchParam = searchParams.get("search");
-    if (catParam) setActiveCategory(catParam);
-    if (searchParam) setSearchText(searchParam);
-  }, [searchParams]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-
-        const assetsRef = ref(database, "assets");
-        const snapshot = await get(assetsRef);
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const assetsList = Object.keys(data).map((key) => ({
-            id: key,
-            ...data[key],
-          }));
-          assetsList.reverse();
-          setAssets(assetsList);
-        }
-      } else {
-        router.push("/login");
+    const assetsRef = ref(database, 'assets');
+    
+    const unsubscribe = onValue(assetsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const assetsList = Object.entries(data).map(([key, value]) => ({
+          id: key,
+          ...value,
+        }));
+        setAssets(assetsList);
       }
       setLoading(false);
     });
+
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
-  const handleDownload = async (asset) => {
-    const assetRef = ref(database, "assets/" + asset.id);
-    await update(assetRef, { downloads: (asset.downloads || 0) + 1 });
+  useEffect(() => {
+    let filtered = assets;
 
-    const downloadUrl = asset.fileUrl.replace("/upload/", "/upload/fl_attachment/");
-    window.location.href = downloadUrl;
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(asset => asset.category === selectedCategory);
+    }
+
+    if (selectedSubcategory) {
+      filtered = filtered.filter(asset => asset.subcategory === selectedSubcategory);
+    }
+
+    setFilteredAssets(filtered);
+  }, [selectedCategory, selectedSubcategory, assets]);
+
+  const getSubcategoryCount = (subcatName) => {
+    return assets.filter(a => a.category === 'Videos' && a.subcategory === subcatName).length;
   };
 
-  const categories = ["All", "Images", "Graphics", "Videos", "APKs"];
-
-  const filteredAssets = assets.filter((a) => {
-    const matchesCategory = activeCategory === "All" || a.category === activeCategory;
-    const matchesSearch =
-      searchText.trim() === "" ||
-      a.title?.toLowerCase().includes(searchText.toLowerCase()) ||
-      a.description?.toLowerCase().includes(searchText.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
-
-  if (loading) {
-    return <div className={styles.loadingScreen}>Loading...</div>;
-  }
-
-  if (!user) {
-    return null;
-  }
+  const folderIcons = {
+    'Meme': '😂',
+    'Gaming': '🎮',
+    'Free Fire Montage': '🔥',
+    'Tutorial': '📚',
+    'Other': '📦'
+  };
 
   return (
     <div className={styles.page}>
       <nav className={styles.navbar}>
-        <a href="/dashboard" className={styles.logo}>
-          getuniquevault
-        </a>
-        <a href="/dashboard" className={styles.backLink}>
-          Dashboard
-        </a>
+        <a href="/dashboard" className={styles.logo}>⚡ getuniquevault</a>
+        <a href="/dashboard" className={styles.backLink}>← Dashboard</a>
       </nav>
 
       <div className={styles.container}>
-        <h1>Browse Assets</h1>
-
-        <input
-          type="text"
-          placeholder="Search assets..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          className={styles.searchBox}
+        <h1 className={styles.title}>Browse Assets</h1>
+        
+        <input 
+          type="text" 
+          placeholder="Search assets..." 
+          className={styles.searchInput}
         />
 
-        <div className={styles.filterBar}>
-          {categories.map((cat) => (
+        {/* Category Buttons */}
+        <div className={styles.categoryButtons}>
+          {['All', 'Images', 'Graphics', 'Videos', 'APKs'].map(cat => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={
-                activeCategory === cat
-                  ? styles.filterBtn + " " + styles.activeFilter
-                  : styles.filterBtn
-              }
+              className={`${styles.categoryBtn} ${selectedCategory === cat ? styles.active : ''}`}
+              onClick={() => {
+                setSelectedCategory(cat);
+                setSelectedSubcategory(null);
+              }}
             >
               {cat}
             </button>
           ))}
         </div>
 
-        {filteredAssets.length === 0 ? (
-          <div className={styles.emptyState}>Koi asset nahi mila.</div>
-        ) : (
-          <div className={styles.grid}>
-            {filteredAssets.map((asset) => (
-              <div key={asset.id} className={styles.card}>
-                <div className={styles.thumbnail}>
-                  {asset.resourceType === "image" ? (
-                    <img src={asset.fileUrl} alt={asset.title} />
-                  ) : asset.resourceType === "video" ? (
-                    <video src={asset.fileUrl} muted />
-                  ) : (
-                    <div className={styles.fileIcon}>File</div>
-                  )}
-                </div>
-                <div className={styles.cardBody}>
-                  <span className={styles.categoryTag}>{asset.category}</span>
-                  <h3>{asset.title}</h3>
-                  <p>{asset.description}</p>
-                  <div className={styles.cardFooter}>
-                    <span className={styles.priceTag}>{asset.price}</span>
-                    <span className={styles.downloadCount}>
-                      {asset.downloads || 0} downloads
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => handleDownload(asset)}
-                    className={styles.downloadBtn}
+        {/* Video Folders - sirf Videos category mein */}
+        {selectedCategory === 'Videos' && (
+          <div className={styles.foldersSection}>
+            <h2>📁 Video Folders</h2>
+            <div className={styles.foldersGrid}>
+              {videoSubcategories.map(sub => {
+                const count = getSubcategoryCount(sub);
+                const isActive = selectedSubcategory === sub;
+                
+                return (
+                  <div
+                    key={sub}
+                    className={`${styles.folderItem} ${isActive ? styles.folderActive : ''}`}
+                    onClick={() => setSelectedSubcategory(isActive ? null : sub)}
                   >
-                    Download
-                  </button>
+                    <div className={styles.folderEmoji}>{folderIcons[sub]}</div>
+                    <div className={styles.folderLabel}>{sub}</div>
+                    <div className={styles.folderCount}>{count} videos</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Assets Display */}
+        {loading ? (
+          <div className={styles.loading}>Loading...</div>
+        ) : filteredAssets.length === 0 ? (
+          <div className={styles.noAssets}>Koi assets nahi milein</div>
+        ) : (
+          <div className={styles.assetsGrid}>
+            {filteredAssets.map(asset => (
+              <div key={asset.id} className={styles.assetCard}>
+                <div className={styles.assetThumb}>
+                  {asset.category === 'Videos' ? '🎥' : '📄'}
+                </div>
+                <div className={styles.assetInfo}>
+                  <h3>{asset.title}</h3>
+                  {asset.subcategory && (
+                    <span className={styles.subcatTag}>{asset.subcategory}</span>
+                  )}
+                  <p>{asset.description?.substring(0, 50)}...</p>
+                  <div className={styles.assetFooter}>
+                    <span>{asset.price}</span>
+                    <span>⬇️ {asset.downloads}</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -150,13 +149,5 @@ function BrowseContent() {
         )}
       </div>
     </div>
-  );
-}
-
-export default function Browse() {
-  return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0a0e17" }}></div>}>
-      <BrowseContent />
-    </Suspense>
   );
 }

@@ -13,6 +13,7 @@ export default function Upload() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('Images');
+  const [subcategory, setSubcategory] = useState('');
   const [price, setPrice] = useState('Free');
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
@@ -63,6 +64,7 @@ export default function Upload() {
         title,
         description,
         category,
+        subcategory: subcategory || null,
         price,
         fileUrl: data.url,
         publicId: data.publicId,
@@ -78,6 +80,7 @@ export default function Upload() {
       setTitle('');
       setDescription('');
       setFile(null);
+      setSubcategory('');
 
       setTimeout(() => {
         router.push('/dashboard');
@@ -143,6 +146,21 @@ export default function Upload() {
               <option value="Videos">Videos</option>
               <option value="APKs">APKs</option>
             </select>
+
+            {/* Videos ke liye subcategory dropdown */}
+            {category === 'Videos' && (
+              <>
+                <label className={styles.label}>Video Type</label>
+                <select value={subcategory} onChange={(e) => setSubcategory(e.target.value)}>
+                  <option value="">-- Select Type --</option>
+                  <option value="Meme">Meme</option>
+                  <option value="Gaming">Gaming</option>
+                  <option value="Free Fire Montage">Free Fire Montage</option>
+                  <option value="Tutorial">Tutorial</option>
+                  <option value="Other">Other</option>
+                </select>
+              </>
+            )}
 
             <label className={styles.label}>Price</label>
             <select value={price} onChange={(e) => setPrice(e.target.value)}>
