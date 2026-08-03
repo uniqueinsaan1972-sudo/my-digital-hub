@@ -11,22 +11,44 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [categoryCounts, setCategoryCounts] = useState({
+    Images: 0,
+    Graphics: 0,
+    Videos: 0,
+    APKs: 0,
+  });
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+
         const userRef = ref(database, 'users/' + currentUser.uid);
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
           setUserData(snapshot.val());
+        }
+
+        // Assets fetch karke category-wise count nikalna
+        const assetsRef = ref(database, 'assets');
+        const assetsSnapshot = await get(assetsRef);
+        if (assetsSnapshot.exists()) {
+          const assets = assetsSnapshot.val();
+          const counts = { Images: 0, Graphics: 0, Videos: 0, APKs: 0 };
+          Object.values(assets).forEach((asset) => {
+            if (counts[asset.category] !== undefined) {
+              counts[asset.category]++;
+            }
+          });
+          setCategoryCounts(counts);
         }
       } else {
         router.push('/login');
       }
       setLoading(false);
     });
+
     return () => unsubscribe();
   }, [router]);
 
@@ -36,10 +58,10 @@ export default function Dashboard() {
   };
 
   const categories = [
-    { name: 'Images', icon: '🖼️', count: '0 assets' },
-    { name: 'Graphics', icon: '🎨', count: '0 assets' },
-    { name: 'Videos', icon: '🎬', count: '0 assets' },
-    { name: 'APKs', icon: '📱', count: '0 assets' },
+    { name: 'Images', icon: '🖼️' },
+    { name: 'Graphics', icon: '🎨' },
+    { name: 'Videos', icon: '🎬' },
+    { name: 'APKs', icon: '📱' },
   ];
 
   if (loading) {
@@ -52,12 +74,11 @@ export default function Dashboard() {
 
   return (
     <div className={styles.page}>
-      {/* NAVBAR */}
       <nav className={styles.navbar}>
         <div className={styles.logo}>⚡ getuniquevault</div>
         <div className={styles.navLinks}>
-          <a href="/dashboard">Browse</a>
-          <a href="#">Upload</a>
+          <a href="/browse">Browse</a>
+          <a href="/upload">Upload</a>
           <a href="#">About</a>
         </div>
         <div className={styles.navRight}>
@@ -68,7 +89,6 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      {/* HERO */}
       <section className={styles.hero}>
         <h1>
           Free Digital Assets <br />
@@ -77,23 +97,21 @@ export default function Dashboard() {
         <p>Download images, graphics, videos, APKs & code. All FREE! 🎉</p>
       </section>
 
-      {/* CATEGORIES */}
       <section className={styles.categories}>
         {categories.map((cat) => (
-          <div key={cat.name} className={styles.categoryCard}>
+          <a href={`/browse?category=${cat.name}`} key={cat.name} className={styles.categoryCard}>
             <span className={styles.categoryIcon}>{cat.icon}</span>
             <h3>{cat.name}</h3>
-            <p>{cat.count}</p>
-          </div>
+            <p>{categoryCounts[cat.name]} assets</p>
+          </a>
         ))}
       </section>
 
-      {/* TRENDING */}
       <section className={styles.trending}>
         <h2>🔥 Trending Downloads</h2>
         <div className={styles.trendingGrid}>
           <div className={styles.emptyState}>
-            Abhi tak koi upload nahi hua — jald hi yahan content dikhega!
+            <a href="/browse" style={{ color: '#60a5fa' }}>Sab uploads dekhne ke liye "Browse" pe jao →</a>
           </div>
         </div>
       </section>
