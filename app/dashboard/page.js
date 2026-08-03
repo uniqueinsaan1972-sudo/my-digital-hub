@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
   const [categoryCounts, setCategoryCounts] = useState({
     Images: 0,
     Graphics: 0,
@@ -73,6 +74,8 @@ export default function Dashboard() {
     { name: 'APKs', icon: '📱' },
   ];
 
+  const initial = (userData?.name || 'U').charAt(0).toUpperCase();
+
   if (loading) {
     return <div className={styles.loadingScreen}>Loading...</div>;
   }
@@ -82,19 +85,45 @@ export default function Dashboard() {
   }
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} onClick={() => menuOpen && setMenuOpen(false)}>
       <nav className={styles.navbar}>
         <div className={styles.logo}>⚡ getuniquevault</div>
         <div className={styles.navLinks}>
-          <a href="/browse">Browse</a>
-          <a href="/upload">Upload</a>
-          <a href="#">About</a>
-        </div>
-        <div className={styles.navRight}>
-          <span className={styles.userName}>{userData?.name || 'User'}</span>
-          <button onClick={handleLogout} className={styles.logoutBtn}>
-            Logout
-          </button>
+  <a href="/browse">Browse</a>
+  <a href="/upload">Upload</a>
+</div>
+
+        <div className={styles.profileWrap}>
+          <div
+            className={styles.avatar}
+            onClick={(e) => {
+              e.stopPropagation();
+              setMenuOpen(!menuOpen);
+            }}
+          >
+            {initial}
+          </div>
+
+          {menuOpen && (
+            <div className={styles.dropdown} onClick={(e) => e.stopPropagation()}>
+              <div className={styles.dropdownHeader}>
+                <p className={styles.dropdownName}>{userData?.name || 'User'}</p>
+                <p className={styles.dropdownEmail}>{userData?.email || user.email}</p>
+              </div>
+              <div className={styles.dropdownItems}>
+                <a href="/profile" className={styles.dropdownItem}>👤 Profile info</a>
+                <a href="/guide" className={styles.dropdownItem}>❓ Guide</a>
+                <a href="/privacy" className={styles.dropdownItem}>🔒 Privacy policy</a>
+                <a href="/contact" className={styles.dropdownItem}>📞 Contact us</a>
+                <a href="mailto:support@getuniquevault.online" className={styles.dropdownItem}>✉️ Help email</a>
+              </div>
+              <div className={styles.dropdownFooter}>
+                <button onClick={handleLogout} className={styles.dropdownLogout}>
+                  🚪 Logout
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
