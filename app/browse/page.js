@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, database } from "../lib/firebase";
 import { ref, get, update } from "firebase/database";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "../../styles/browse.module.css";
 
 export default function Browse() {
@@ -12,7 +12,16 @@ export default function Browse() {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchText, setSearchText] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const catParam = searchParams.get("category");
+    const searchParam = searchParams.get("search");
+    if (catParam) setActiveCategory(catParam);
+    if (searchParam) setSearchText(searchParam);
+  }, [searchParams]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -48,10 +57,14 @@ export default function Browse() {
 
   const categories = ["All", "Images", "Graphics", "Videos", "APKs"];
 
-  const filteredAssets =
-    activeCategory === "All"
-      ? assets
-      : assets.filter((a) => a.category === activeCategory);
+  const filteredAssets = assets.filter((a) => {
+    const matchesCategory = activeCategory === "All" || a.category === activeCategory;
+    const matchesSearch =
+      searchText.trim() === "" ||
+      a.title?.toLowerCase().includes(searchText.toLowerCase()) ||
+      a.description?.toLowerCase().includes(searchText.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   if (loading) {
     return <div className={styles.loadingScreen}>Loading...</div>;
@@ -75,6 +88,14 @@ export default function Browse() {
       <div className={styles.container}>
         <h1>Browse Assets</h1>
 
+        <input
+          type="text"
+          placeholder="Search assets..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          className={styles.searchBox}
+        />
+
         <div className={styles.filterBar}>
           {categories.map((cat) => (
             <button
@@ -93,7 +114,7 @@ export default function Browse() {
 
         {filteredAssets.length === 0 ? (
           <div className={styles.emptyState}>
-            Is category mein abhi koi asset nahi hai.
+            Koi asset nahi mila.
           </div>
         ) : (
           <div className={styles.grid}>

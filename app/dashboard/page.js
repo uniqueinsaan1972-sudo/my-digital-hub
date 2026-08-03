@@ -11,6 +11,7 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [categoryCounts, setCategoryCounts] = useState({
     Images: 0,
     Graphics: 0,
@@ -30,7 +31,6 @@ export default function Dashboard() {
           setUserData(snapshot.val());
         }
 
-        // Assets fetch karke category-wise count nikalna
         const assetsRef = ref(database, 'assets');
         const assetsSnapshot = await get(assetsRef);
         if (assetsSnapshot.exists()) {
@@ -55,6 +55,15 @@ export default function Dashboard() {
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/login');
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/browse?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/browse');
+    }
   };
 
   const categories = [
@@ -95,6 +104,19 @@ export default function Dashboard() {
           <span className={styles.highlight}>For Creators</span>
         </h1>
         <p>Download images, graphics, videos, APKs & code. All FREE! 🎉</p>
+
+        <form onSubmit={handleSearch} className={styles.searchForm}>
+          <input
+            type="text"
+            placeholder="Search images, videos, APKs, effects..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={styles.searchInput}
+          />
+          <button type="submit" className={styles.searchBtn}>
+            🔍 Search
+          </button>
+        </form>
       </section>
 
       <section className={styles.categories}>
