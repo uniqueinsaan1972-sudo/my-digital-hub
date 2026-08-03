@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, database } from "../lib/firebase";
 import { ref, get, update } from "firebase/database";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "../../styles/browse.module.css";
 
-export default function Browse() {
+function BrowseContent() {
   const [user, setUser] = useState(null);
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -113,9 +113,7 @@ export default function Browse() {
         </div>
 
         {filteredAssets.length === 0 ? (
-          <div className={styles.emptyState}>
-            Koi asset nahi mila.
-          </div>
+          <div className={styles.emptyState}>Koi asset nahi mila.</div>
         ) : (
           <div className={styles.grid}>
             {filteredAssets.map((asset) => (
@@ -152,5 +150,13 @@ export default function Browse() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function Browse() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0a0e17" }}></div>}>
+      <BrowseContent />
+    </Suspense>
   );
 }
