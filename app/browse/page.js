@@ -6,6 +6,17 @@ import { ref, onValue } from 'firebase/database';
 import { useSearchParams } from 'next/navigation';
 import styles from '../../styles/browse.module.css';
 
+function getThumbnailUrl(asset) {
+  if (asset.resourceType === 'video') {
+    return asset.fileUrl.replace(/\.\w+$/, '.jpg');
+  }
+  return asset.fileUrl;
+}
+
+function getDownloadUrl(asset) {
+  return asset.fileUrl.replace('/upload/', '/upload/fl_attachment/');
+}
+
 function BrowseContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category') || 'All';
@@ -16,7 +27,6 @@ function BrowseContent() {
   const [filteredAssets, setFilteredAssets] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Subcategories for Videos
   const videoSubcategories = ['Meme', 'Gaming', 'Free Fire Montage', 'Tutorial', 'Other'];
 
   useEffect(() => {
@@ -79,7 +89,6 @@ function BrowseContent() {
           className={styles.searchInput}
         />
 
-        {/* Category Buttons */}
         <div className={styles.categoryButtons}>
           {['All', 'Images', 'Graphics', 'Videos', 'APKs'].map(cat => (
             <button
@@ -95,7 +104,6 @@ function BrowseContent() {
           ))}
         </div>
 
-        {/* Video Folders - sirf Videos category mein */}
         {selectedCategory === 'Videos' && (
           <div className={styles.foldersSection}>
             <h2>📁 Video Folders</h2>
@@ -120,7 +128,6 @@ function BrowseContent() {
           </div>
         )}
 
-        {/* Assets Display */}
         {loading ? (
           <div className={styles.loading}>Loading...</div>
         ) : filteredAssets.length === 0 ? (
@@ -130,7 +137,18 @@ function BrowseContent() {
             {filteredAssets.map(asset => (
               <div key={asset.id} className={styles.assetCard}>
                 <div className={styles.assetThumb}>
-                  {asset.category === 'Videos' ? '🎥' : '📄'}
+                  <img
+                    src={getThumbnailUrl(asset)}
+                    alt={asset.title}
+                    className={styles.thumbImage}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className={styles.fallbackIcon} style={{ display: 'none' }}>
+                    {asset.category === 'Videos' ? '🎥' : '📄'}
+                  </div>
                 </div>
                 <div className={styles.assetInfo}>
                   <h3>{asset.title}</h3>
@@ -140,7 +158,9 @@ function BrowseContent() {
                   <p>{asset.description?.substring(0, 50)}...</p>
                   <div className={styles.assetFooter}>
                     <span>{asset.price}</span>
-                    <span>⬇️ {asset.downloads}</span>
+                    <a href={getDownloadUrl(asset)} download className={styles.downloadBtn}>
+                      ⬇️ Download
+                    </a>
                   </div>
                 </div>
               </div>
