@@ -13,10 +13,6 @@ function getThumbnailUrl(asset) {
   return asset.fileUrl;
 }
 
-function getDownloadUrl(asset) {
-  return asset.fileUrl.replace('/upload/', '/upload/fl_attachment/');
-}
-
 function BrowseContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category') || 'All';
@@ -26,6 +22,7 @@ function BrowseContent() {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [filteredAssets, setFilteredAssets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [downloadingId, setDownloadingId] = useState(null);
 
   const videoSubcategories = ['Meme', 'Gaming', 'Free Fire Montage', 'Tutorial', 'Other'];
 
@@ -71,6 +68,27 @@ function BrowseContent() {
     'Free Fire Montage': '🔥',
     'Tutorial': '📚',
     'Other': '📦'
+  };
+
+  const handleDownload = async (asset) => {
+    setDownloadingId(asset.id);
+    try {
+      const cloudinaryDownloadUrl = asset.fileUrl.replace('/upload/', '/upload/fl_attachment/');
+      const res = await fetch(`/api/shorten?url=${encodeURIComponent(cloudinaryDownloadUrl)}`);
+      const data = await res.json();
+
+      if (data.shortUrl) {
+        window.open(data.shortUrl, '_blank');
+      } else {
+        window.open(cloudinaryDownloadUrl, '_blank');
+      }
+    } catch (error) {
+      console.error('Download error:', error);
+      const fallbackUrl = asset.fileUrl.replace('/upload/', '/upload/fl_attachment/');
+      window.open(fallbackUrl, '_blank');
+    } finally {
+      setDownloadingId(null);
+    }
   };
 
   return (
@@ -158,9 +176,13 @@ function BrowseContent() {
                   <p>{asset.description?.substring(0, 50)}...</p>
                   <div className={styles.assetFooter}>
                     <span>{asset.price}</span>
-                    <a href={getDownloadUrl(asset)} download className={styles.downloadBtn}>
-                      ⬇️ Download
-                    </a>
+                    <button
+                      onClick={() => handleDownload(asset)}
+                      className={styles.downloadBtn}
+                      disabled={downloadingId === asset.id}
+                    >
+                      {downloadingId === asset.id ? '...' : '⬇️ Download'}
+                    </button>
                   </div>
                 </div>
               </div>
