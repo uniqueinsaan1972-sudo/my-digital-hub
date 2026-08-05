@@ -88,11 +88,11 @@ export default function Dashboard() {
     <div className={styles.page} onClick={() => menuOpen && setMenuOpen(false)}>
       <nav className={styles.navbar}>
         <div className={styles.logo}>⚡ getuniquevault</div>
-        <div className={styles.navLinks}>
+ <div className={styles.navLinks}>
   <a href="/browse">Browse</a>
   <a href="/upload">Upload</a>
+  <a href="/admin/moderation" style={{ color: '#e74c3c', fontWeight: 'bold' }}>🛡️ Admin</a>
 </div>
-
         <div className={styles.profileWrap}>
           <div
             className={styles.avatar}
@@ -110,13 +110,14 @@ export default function Dashboard() {
                 <p className={styles.dropdownName}>{userData?.name || 'User'}</p>
                 <p className={styles.dropdownEmail}>{userData?.email || user.email}</p>
               </div>
-              <div className={styles.dropdownItems}>
-                <a href="/profile" className={styles.dropdownItem}>👤 Profile info</a>
-                <a href="/guide" className={styles.dropdownItem}>❓ Guide</a>
-                <a href="/privacy" className={styles.dropdownItem}>🔒 Privacy policy</a>
-                <a href="/contact" className={styles.dropdownItem}>📞 Contact us</a>
-                <a href="mailto:support@getuniquevault.online" className={styles.dropdownItem}>✉️ Help email</a>
-              </div>
+<div className={styles.dropdownItems}>
+  <a href="/profile" className={styles.dropdownItem}>👤 Profile info</a>
+  <a href="/guide" className={styles.dropdownItem}>❓ Guide</a>
+  <a href="/admin/moderation" className={styles.dropdownItem}>🛡️ Admin Panel</a>
+  <a href="/privacy" className={styles.dropdownItem}>🔒 Privacy policy</a>
+  <a href="/contact" className={styles.dropdownItem}>📞 Contact us</a>
+  <a href="mailto:support@getuniquevault.online" className={styles.dropdownItem}>✉️ Help email</a>
+</div>
               <div className={styles.dropdownFooter}>
                 <button onClick={handleLogout} className={styles.dropdownLogout}>
                   🚪 Logout

@@ -60,21 +60,22 @@ export default function Upload() {
       const assetsRef = ref(database, 'assets');
       const newAssetRef = push(assetsRef);
 
-      await set(newAssetRef, {
-        title,
-        description,
-        category,
-        subcategory: subcategory || null,
-        price,
-        fileUrl: data.url,
-        publicId: data.publicId,
-        resourceType: data.resourceType,
-        format: data.format,
-        uploadedBy: user.uid,
-        uploaderEmail: user.email,
-        createdAt: new Date().toISOString(),
-        downloads: 0,
-      });
+await set(newAssetRef, {
+  title,
+  description,
+  category,
+  subcategory: subcategory || null,
+  price,
+  fileUrl: data.url,
+  publicId: data.publicId,
+  resourceType: data.resourceType,
+  format: data.format,
+  status: "pending",           // ← YEH ADD KARO
+  uploadedBy: user.uid,
+  uploaderEmail: user.email,
+  createdAt: new Date().toISOString(),
+  downloads: 0,
+});
 
       setSuccess(true);
       setTitle('');
@@ -111,7 +112,7 @@ export default function Upload() {
           <p className={styles.subtitle}>Apni file duniya ke saath share karo</p>
 
           {error && <div className={styles.error}>{error}</div>}
-          {success && <div className={styles.success}>Upload ho gaya! 🎉 Redirecting...</div>}
+{success && <div className={styles.success}>✅ Upload submitted for moderation! 🎉 Admin ko check karne do...</div>}
 
           <form onSubmit={handleUpload}>
             <label className={styles.label}>File Choose Karo</label>
