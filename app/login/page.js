@@ -32,9 +32,9 @@ export default function Login() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <div className={styles.logo}>⚡ getuniquevault</div>
+        <div className={styles.logo}>⚡ Getuniquevault</div>
         <h1>Welcome Back</h1>
-        <p className={styles.subtitle}>Login karo apne account mein</p>
+        <p className={styles.subtitle}>Login to your account</p>
 
         {error && <div className={styles.error}>{error}</div>}
 
@@ -54,12 +54,12 @@ export default function Login() {
             required
           />
           <button type="submit" disabled={loading}>
-            {loading ? 'Logging In...' : 'Login Karo 🚀'}
+            {loading ? 'Logging In...' : 'Login Now 🚀'}
           </button>
         </form>
 
         <p className={styles.switchText}>
-          Account nahi hai? <a href="/signup">Signup Karo</a>
+          No Account found? <a href="/signup">Signup now</a>
         </p>
       </div>
     </div>

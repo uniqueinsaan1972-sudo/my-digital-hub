@@ -52,7 +52,7 @@ export default function Signup() {
         <form onSubmit={handleSignup}>
           <input
             type="text"
-            placeholder="Tera Name"
+            placeholder="Enter your name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -73,12 +73,12 @@ export default function Signup() {
             minLength="6"
           />
           <button type="submit" disabled={loading}>
-            {loading ? 'Creating Account...' : 'Account Banao 🎯'}
+            {loading ? 'Creating Account...' : 'Create Account 🎯'}
           </button>
         </form>
 
         <p className={styles.switchText}>
-          Already account hai? <a href="/login">Login Karo</a>
+          Already have an account? <a href="/login">Login here</a>
         </p>
       </div>
     </div>

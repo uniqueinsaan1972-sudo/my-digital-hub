@@ -13,13 +13,17 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
-  const [categoryCounts, setCategoryCounts] = useState({
-    Images: 0,
-    Graphics: 0,
-    Videos: 0,
-    APKs: 0,
-  });
+  const [categoryCounts, setCategoryCounts] = useState({});
+  const [categoryList, setCategoryList] = useState([]);
   const router = useRouter();
+
+  // Default icons for known category names; anything else falls back to 📦
+  const defaultIcons = {
+    Images: '🖼️',
+    Graphics: '🎨',
+    Videos: '🎬',
+    APKs: '📱',
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -32,14 +36,32 @@ export default function Dashboard() {
           setUserData(snapshot.val());
         }
 
+        // Fetch categories dynamically from Firebase (same source as Upload/Admin)
+        const categoriesRef = ref(database, 'categories');
+        const categoriesSnapshot = await get(categoriesRef);
+        let categoryNames = [];
+        if (categoriesSnapshot.exists()) {
+          const categoriesData = categoriesSnapshot.val();
+          categoryNames = Object.keys(categoriesData);
+          setCategoryList(
+            categoryNames.map((name) => ({
+              name,
+              icon: categoriesData[name]?.icon || defaultIcons[name] || '📦',
+            }))
+          );
+        }
+
         const assetsRef = ref(database, 'assets');
         const assetsSnapshot = await get(assetsRef);
         if (assetsSnapshot.exists()) {
           const assets = assetsSnapshot.val();
-          const counts = { Images: 0, Graphics: 0, Videos: 0, APKs: 0 };
+          const counts = {};
+          categoryNames.forEach((name) => (counts[name] = 0));
           Object.values(assets).forEach((asset) => {
             if (counts[asset.category] !== undefined) {
               counts[asset.category]++;
+            } else if (asset.category) {
+              counts[asset.category] = 1;
             }
           });
           setCategoryCounts(counts);
@@ -66,13 +88,6 @@ export default function Dashboard() {
       router.push('/browse');
     }
   };
-
-  const categories = [
-    { name: 'Images', icon: '🖼️' },
-    { name: 'Graphics', icon: '🎨' },
-    { name: 'Videos', icon: '🎬' },
-    { name: 'APKs', icon: '📱' },
-  ];
 
   const initial = (userData?.name || 'U').charAt(0).toUpperCase();
 
@@ -150,11 +165,11 @@ export default function Dashboard() {
       </section>
 
       <section className={styles.categories}>
-        {categories.map((cat) => (
+        {categoryList.map((cat) => (
           <a href={`/browse?category=${cat.name}`} key={cat.name} className={styles.categoryCard}>
             <span className={styles.categoryIcon}>{cat.icon}</span>
             <h3>{cat.name}</h3>
-            <p>{categoryCounts[cat.name]} assets</p>
+            <p>{categoryCounts[cat.name] || 0} assets</p>
           </a>
         ))}
       </section>

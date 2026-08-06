@@ -41,16 +41,3 @@ export async function POST(request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-const uploadData = {
-  fileName: file.name,
-  url: fileUrl,
-  title: title,
-  description: description,
-  status: "pending",        // ← YEH NAYA HAI
-  userId: currentUser.uid,
-  uploadedAt: new Date().getTime(),
-  category: "Images"
-};
-
-// Firebase mein save karo
-await database.ref('uploads/' + uploadId).set(uploadData);
