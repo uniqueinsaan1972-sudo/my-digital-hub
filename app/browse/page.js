@@ -7,6 +7,9 @@ import { useSearchParams } from 'next/navigation';
 import styles from '../../styles/browse.module.css';
 
 function getThumbnailUrl(asset) {
+  if (asset.thumbnailUrl) {
+    return asset.thumbnailUrl;
+  }
   if (asset.resourceType === 'video') {
     return asset.fileUrl.replace(/\.\w+$/, '.jpg');
   }
