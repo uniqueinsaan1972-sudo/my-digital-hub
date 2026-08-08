@@ -1,3 +1,4 @@
+/* Main Page Layout */
 .page {
   min-height: 100vh;
   display: flex;
@@ -8,6 +9,50 @@
   padding: 20px;
 }
 
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ===== CARD ===== */
 .card {
   background: #0f1420;
   border: 1px solid #1f2937;
@@ -16,21 +61,26 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   width: 100%;
   max-width: 400px;
+  animation: fadeIn 0.6s ease-out;
 }
 
+/* ===== LOGO ===== */
 .logo {
   text-align: center;
   color: #60a5fa;
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 25px;
+  animation: slideDown 0.6s ease-out;
 }
 
+/* ===== HEADINGS ===== */
 .card h1 {
   text-align: center;
   color: #e5e7eb;
   margin-bottom: 8px;
   font-size: 24px;
+  animation: slideUp 0.6s ease-out;
 }
 
 .subtitle {
@@ -38,34 +88,142 @@
   color: #9ca3af;
   font-size: 14px;
   margin-bottom: 25px;
+  animation: slideUp 0.6s ease-out;
+  animation-delay: 0.1s;
+  animation-fill-mode: backwards;
 }
 
+/* ===== FORM ===== */
 .card form {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.card input {
+/* ===== INPUT GROUP ===== */
+.inputGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+  animation: slideUp 0.6s ease-out;
+  animation-fill-mode: backwards;
+}
+
+.inputGroup:nth-child(1) { animation-delay: 0.2s; }
+.inputGroup:nth-child(2) { animation-delay: 0.3s; }
+.inputGroup:nth-child(3) { animation-delay: 0.4s; }
+.inputGroup:nth-child(4) { animation-delay: 0.5s; }
+
+/* ===== INPUT FIELD ===== */
+.card input,
+.input {
   padding: 12px;
+  padding-left: 40px;
   background: #1a2030;
   border: 1px solid #2d3748;
   border-radius: 8px;
   font-size: 15px;
   color: #e5e7eb;
-  transition: border-color 0.3s;
+  transition: all 0.3s ease;
+  width: 100%;
+  outline: none;
 }
 
-.card input::placeholder {
+.card input::placeholder,
+.input::placeholder {
   color: #6b7280;
 }
 
-.card input:focus {
-  outline: none;
+.card input:focus,
+.input:focus {
   border-color: #60a5fa;
+  background: #1f2740;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+  transform: translateY(-2px);
 }
 
-.card button {
+.card input:disabled,
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== INPUT ICON ===== */
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  font-size: 16px;
+  pointer-events: none;
+  animation: fadeIn 0.4s ease-out 0.3s backwards;
+}
+
+/* ===== TOGGLE PASSWORD BUTTON ===== */
+.togglePassword {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px;
+  transition: all 0.2s ease;
+}
+
+.togglePassword:hover:not(:disabled) {
+  color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.1);
+}
+
+.togglePassword:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ===== PASSWORD STRENGTH INDICATOR ===== */
+.passwordStrength {
+  animation: slideDown 0.3s ease-out;
+  margin-top: 8px;
+}
+
+.strengthBar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.strengthFill {
+  height: 100%;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.strength0 { background: #ef4444; }
+.strength1 { background: #f97316; }
+.strength2 { background: #eab308; }
+.strength3 { background: #84cc16; }
+.strength4 { background: #22c55e; }
+.strength5 { background: #10b981; }
+
+.strengthText0 { color: #fca5a5; }
+.strengthText1 { color: #fedba8; }
+.strengthText2 { color: #fef08a; }
+.strengthText3 { color: #bef264; }
+.strengthText4 { color: #86efac; }
+.strengthText5 { color: #6ee7b7; }
+
+.passwordStrength small {
+  font-size: 12px;
+  transition: all 0.3s ease;
+  color: inherit;
+}
+
+/* ===== SUBMIT BUTTON ===== */
+.card button,
+.submitBtn {
   padding: 12px;
   background: linear-gradient(135deg, #60a5fa, #a78bfa);
   color: white;
@@ -74,35 +232,57 @@
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  animation: slideUp 0.6s ease-out 0.6s backwards;
+  margin-top: 10px;
 }
 
-.card button:hover:not(:disabled) {
+.card button:hover:not(:disabled),
+.submitBtn:hover:not(:disabled) {
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(96, 165, 250, 0.3);
 }
 
-.card button:disabled {
+.card button:active:not(:disabled),
+.submitBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.card button:disabled,
+.submitBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.switchText {
-  text-align: center;
-  margin-top: 20px;
-  color: #9ca3af;
-  font-size: 14px;
+.submitBtn.loading {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
 }
 
-.switchText a {
-  color: #60a5fa;
-  text-decoration: none;
-  font-weight: bold;
+/* ===== SPINNER (LOADING STATE) ===== */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
-.switchText a:hover {
-  text-decoration: underline;
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(96, 165, 250, 0.2);
+  border-top-color: rgba(96, 165, 250, 0.8);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
 }
 
+/* ===== ERROR MESSAGE ===== */
 .error {
   background: #7f1d1d;
   color: #fca5a5;
@@ -111,13 +291,118 @@
   margin-bottom: 15px;
   border-left: 4px solid #ef4444;
   font-size: 14px;
+  animation: slideDown 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
+.error span {
+  font-size: 16px;
+}
+
+/* ===== SWITCH TEXT ===== */
+.switchText {
+  text-align: center;
+  margin-top: 20px;
+  color: #9ca3af;
+  font-size: 14px;
+  animation: slideUp 0.6s ease-out 0.7s backwards;
+}
+
+.switchText a {
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.switchText a:hover {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+.switchText a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #60a5fa;
+  transition: width 0.3s ease;
+}
+
+.switchText a:hover::after {
+  width: 100%;
+}
+
+/* ===== FEATURES SECTION ===== */
+.features {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #1f2937;
+  animation: slideUp 0.6s ease-out 0.8s backwards;
+}
+
+.features p {
+  color: #9ca3af;
+  font-size: 13px;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.features p:hover {
+  color: #e5e7eb;
+  transform: translateX(4px);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 480px) {
   .card {
     padding: 25px;
   }
+
   .card h1 {
     font-size: 20px;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .card input,
+  .input {
+    padding: 10px 10px 10px 36px;
+    font-size: 16px;
+  }
+
+  .card button,
+  .submitBtn {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .features {
+    margin-top: 20px;
+  }
+
+  .features p {
+    font-size: 12px;
+  }
+}
+
+/* ===== DARK MODE ===== */
+@media (prefers-color-scheme: dark) {
+  .page {
+    background: #0a0e17;
+  }
+
+  .card {
+    background: #0f1420;
   }
 }
