@@ -9,8 +9,7 @@ export async function GET(request) {
       return NextResponse.json({ error: 'No URL provided' }, { status: 400 });
     }
 
-    const apiKey = process.env.GPLINKS_API_KEY;
-    const apiUrl = `https://api.gplinks.com/api?api=${apiKey}&url=${encodeURIComponent(targetUrl)}&format=text`;
+
 
     const res = await fetch(apiUrl);
     const shortUrl = (await res.text()).trim();
