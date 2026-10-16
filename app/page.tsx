@@ -37,22 +37,22 @@ export default function Home() {
     {
       icon: '🖼️',
       title: 'Images & Graphics',
-      desc: 'Professional quality backgrounds, templates aur designs'
+      desc: 'Professional quality backgrounds, templates and designs'
     },
     {
       icon: '🎬',
       title: 'Videos & Effects',
-      desc: 'Premium video templates, transitions aur editing assets'
+      desc: 'Premium video templates, transitions and editing assets'
     },
     {
       icon: '📱',
       title: 'APKs & Apps',
-      desc: 'Mod apps, pro versions aur exclusive tools'
+      desc: 'Mod apps, pro versions and exclusive tools'
     },
     {
       icon: '💻',
       title: 'Code & Dev',
-      desc: 'Ready-to-use code snippets aur development resources'
+      desc: 'Ready-to-use code snippets and development resources'
     }
   ];
 
@@ -60,45 +60,45 @@ export default function Home() {
     {
       emoji: '⚡',
       title: 'Lightning Fast',
-      desc: 'Direct downloads - koi ads wait nahi'
+      desc: 'Direct downloads - just 15 secound wait time'
     },
     {
       emoji: '🔒',
       title: 'Secure & Private',
-      desc: 'Apka data safe aur secure hai'
+      desc: 'Safe and secure , 100% verified'
     },
     {
       emoji: '💰',
       title: 'Bilkul Free',
-      desc: 'Sab resources free download kar sakte ho'
+      desc: 'All content free - no hidden charges'
     },
     {
       emoji: '🎁',
       title: 'Regular Updates',
-      desc: 'Har hafte naye content add hota hai'
+      desc: 'Day by Day new content added - 1000+ resources'
     }
   ];
 
   const steps = [
     {
       num: '01',
-      title: 'Account Banao',
-      desc: '2 minuto mein quick signup karo'
+      title: 'Create Account Now',
+      desc: 'With in 2 mintues your account is ready'
     },
     {
       num: '02',
       title: 'Browse & Download',
-      desc: 'Apne pasand ka content dhoondhdo'
+      desc: 'search aur download Your favourite content'
     },
     {
       num: '03',
       title: 'Use & Enjoy',
-      desc: 'Apne projects mein use karo'
+      desc: 'Use it in your projects with no worries'
     },
     {
       num: '04',
-      title: 'Share & Earn',
-      desc: 'Content upload karo aur passive income banaao'
+      title: 'Share & Earn - Coming Soon',
+      desc: 'Upload your own content aur earn rewards'
     }
   ];
 
@@ -157,13 +157,13 @@ export default function Home() {
               className={styles.ctaPrimary}
               onClick={() => router.push('/signup')}
             >
-              Account Banao - Ab Hi! 🚀
+              Create Account Now →
             </button>
             <button 
               className={styles.ctaSecondary}
               onClick={handleDashboard}
             >
-              Browse Content →
+              Already have an account? →
             </button>
           </div>
           <div className={styles.heroStats + ' ' + styles.slideUp}>
@@ -187,7 +187,7 @@ export default function Home() {
       <section className={styles.features}>
         <div className={styles.sectionHeader}>
           <h2>Kya Mil Sakta Hai? 📦</h2>
-          <p>Creators ke liye sab kuch ek jagah par</p>
+          <p>All-in-one platform for creators (ideal for a feature list or platform pitch)</p>
         </div>
         <div className={styles.featuresGrid}>
           {features.map((feature, idx) => (
@@ -210,8 +210,8 @@ export default function Home() {
       {/* Benefits Section */}
       <section className={styles.benefits}>
         <div className={styles.sectionHeader}>
-          <h2>Kyun GetUniqueVault? 🌟</h2>
-          <p>Ye sab features sirf yahi par milenge</p>
+          <h2>Why Choose GetUniqueVault? 🌟</h2>
+          <p>Everything you need, exclusively here.</p>
         </div>
         <div className={styles.benefitsGrid}>
           {benefits.map((benefit, idx) => (
@@ -231,8 +231,8 @@ export default function Home() {
       {/* How It Works */}
       <section className={styles.howItWorks}>
         <div className={styles.sectionHeader}>
-          <h2>3 Steps Mein Shuru Karo 🎯</h2>
-          <p>Bilkul simple process - 2 minuto mein!</p>
+          <h2>Start it in 3 Easy Steps 🚀</h2>
+          <p>Simple process, completed in just 2 minutes.</p>
         </div>
         <div className={styles.stepsContainer}>
           {steps.map((step, idx) => (
